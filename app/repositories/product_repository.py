@@ -11,14 +11,20 @@ class ProductRepository:
         db: Session,
         product_id: int,
     ) -> Product | None:
-        return db.get(Product, product_id)
+        return db.get(
+            Product,
+            product_id,
+        )
 
     def get_by_sku(
         self,
         db: Session,
         sku: str,
     ) -> Product | None:
-        statement = select(Product).where(Product.sku == sku)
+        statement = select(Product).where(
+            Product.sku == sku
+        )
+
         return db.scalar(statement)
 
     def get_all(
@@ -33,7 +39,9 @@ class ProductRepository:
             .limit(limit)
         )
 
-        return list(db.scalars(statement).all())
+        return list(
+            db.scalars(statement).all()
+        )
 
     def add(
         self,
@@ -44,3 +52,11 @@ class ProductRepository:
         db.flush()
 
         return product
+
+    def delete(
+        self,
+        db: Session,
+        product: Product,
+    ) -> None:
+        db.delete(product)
+        db.flush()

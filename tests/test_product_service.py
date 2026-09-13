@@ -1,5 +1,6 @@
 from decimal import Decimal
 from unittest.mock import Mock
+from app.services.product_service import ProductNotFoundError
 
 import pytest
 
@@ -71,3 +72,16 @@ def test_create_product_success():
     db.refresh.assert_called_once_with(saved_product)
 
     assert result is saved_product
+
+
+def test_get_product_by_id_not_found():
+    repository = Mock(spec=ProductRepository)
+    repository.get_by_id.return_value = None
+
+    service = ProductService(repository)
+    db = Mock()
+
+    with pytest.raises(ProductNotFoundError):
+        service.get_product_by_id(db, 999)
+
+    repository.get_by_id.assert_called_once_with(db, 999)

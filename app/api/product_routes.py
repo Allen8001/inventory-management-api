@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
@@ -48,8 +48,8 @@ def create_product(
     response_model=list[ProductResponse],
 )
 def get_products(
-    offset: int = 0,
-    limit: int = 20,
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
     return service.get_products(
@@ -80,7 +80,7 @@ def get_product(
         ) from exc
 
 
-@router.put(
+@router.patch(
     "/{product_id}",
     response_model=ProductResponse,
 )

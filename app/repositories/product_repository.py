@@ -35,13 +35,14 @@ class ProductRepository:
     ) -> list[Product]:
         statement = (
             select(Product)
+            .order_by(Product.id)
             .offset(offset)
             .limit(limit)
         )
 
         return list(
-            db.scalars(statement).all()
-        )
+        db.scalars(statement).all()
+    )
 
     def add(
         self,
